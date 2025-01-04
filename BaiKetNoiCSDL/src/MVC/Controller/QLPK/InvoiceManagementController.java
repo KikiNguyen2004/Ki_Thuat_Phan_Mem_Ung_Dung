@@ -1,6 +1,8 @@
 package MVC.Controller.QLPK;
 
+import MVC.View.QLPK.EmployeeMainView;
 import MVC.View.QLPK.InvoiceManagementView;
+import MVC.View.QLPK.EmployeeMainView;
 
 import javax.swing.*;
 import java.sql.*;
@@ -26,6 +28,7 @@ public class InvoiceManagementController {
         view.addButton.addActionListener(e -> addInvoice());
         view.updateButton.addActionListener(e -> updateInvoice());
         view.deleteButton.addActionListener(e -> deleteInvoice());
+        view.returnButton.addActionListener(e -> returnToEmployeeMainView());
     }
 
     private void loadInvoiceIDs() {
@@ -139,6 +142,23 @@ public class InvoiceManagementController {
         } else {
             JOptionPane.showMessageDialog(view, "Please select an Invoice ID to delete.");
         }
+    }
+    
+    private void returnToEmployeeMainView() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            showError("Error closing database connection.", e);
+        }
+        view.dispose();
+        EmployeeMainView employeeMainView = new EmployeeMainView();
+        new EmployeeMainController(employeeMainView);
+        employeeMainView.setVisible(true);
+    }
+
+    private void showError(String message, Exception ex) {
+        JOptionPane.showMessageDialog(view, message);
+        ex.printStackTrace();
     }
 
     public static void main(String[] args) {

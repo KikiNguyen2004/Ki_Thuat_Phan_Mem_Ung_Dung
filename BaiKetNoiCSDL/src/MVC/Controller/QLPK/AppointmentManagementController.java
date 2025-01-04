@@ -2,6 +2,8 @@ package MVC.Controller.QLPK;
 
 import MVC.Model.QLPK.AppointmentManagementModel;
 import MVC.View.QLPK.AppointmentManagementView;
+import MVC.View.QLPK.EmployeeMainView;
+
 
 import javax.swing.*;
 import java.sql.*;
@@ -25,6 +27,7 @@ public class AppointmentManagementController {
         view.addButton.addActionListener(e -> addAppointment());
         view.updateButton.addActionListener(e -> updateAppointment());
         view.deleteButton.addActionListener(e -> deleteAppointment());
+        view.returnButton.addActionListener(e -> returnToEmployeeMainView());
     }
     
     
@@ -69,7 +72,7 @@ public class AppointmentManagementController {
                 JOptionPane.showMessageDialog(view, "Appointment conflict detected. Please choose another time.");
             } else {
                 try (PreparedStatement insertStatement = connection.prepareStatement(
-                        "INSERT INTO Appointment (maLichHen, maBenhNhan, maBacSi, ngayKham, buoiKham, maDichVu) VALUES (?, ?, ?, ?, ?, ?)");) {
+                        "INSERT INTO Appointment (maLichHen, maBenhNhan, maBacSi, ngayKham, buoiKham, maDichVu) VALUES (?, ?, ?, ?, ?, ?)")) {
                     insertStatement.setString(1, view.appointmentIDField.getText());
                     insertStatement.setString(2, view.patientIDField.getText());
                     insertStatement.setString(3, doctorID);
@@ -127,6 +130,23 @@ public class AppointmentManagementController {
                 ex.printStackTrace();
             }
         }
+    }
+
+    private void returnToEmployeeMainView() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            showError("Error closing database connection.", e);
+        }
+        view.dispose();
+        EmployeeMainView employeeMainView = new EmployeeMainView();
+        new EmployeeMainController(employeeMainView);
+        employeeMainView.setVisible(true);
+    }
+
+    private void showError(String message, Exception ex) {
+        JOptionPane.showMessageDialog(view, message);
+        ex.printStackTrace();
     }
 
     public static void main(String[] args) {

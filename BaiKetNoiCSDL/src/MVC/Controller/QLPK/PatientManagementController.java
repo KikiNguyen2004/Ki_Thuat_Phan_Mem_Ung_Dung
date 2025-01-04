@@ -2,6 +2,7 @@ package MVC.Controller.QLPK;
 
 import MVC.Model.QLPK.PatientManagementModel;
 import MVC.View.QLPK.PatientManagementView;
+import MVC.View.QLPK.EmployeeMainView;
 
 import javax.swing.*;
 import java.sql.*;
@@ -26,6 +27,7 @@ public class PatientManagementController {
         view.updateButton.addActionListener(e -> editPatient());
         view.deleteButton.addActionListener(e -> deletePatient());
         view.searchButton.addActionListener(e -> searchPatient());
+        view.returnButton.addActionListener(e -> returnToEmployeeMainView());
     }
 
     private void loadPatientIDs() {
@@ -135,6 +137,23 @@ public class PatientManagementController {
         } else {
             JOptionPane.showMessageDialog(view, "No patient selected to delete.");
         }
+    }
+    
+    private void returnToEmployeeMainView() {
+        try {
+            connection.close();
+        } catch (SQLException e) {
+            showError("Error closing database connection.", e);
+        }
+        view.dispose();
+        EmployeeMainView employeeMainView = new EmployeeMainView();
+        new EmployeeMainController(employeeMainView);
+        employeeMainView.setVisible(true);
+    }
+
+    private void showError(String message, Exception ex) {
+        JOptionPane.showMessageDialog(view, message);
+        ex.printStackTrace();
     }
 
     public static void main(String[] args) {

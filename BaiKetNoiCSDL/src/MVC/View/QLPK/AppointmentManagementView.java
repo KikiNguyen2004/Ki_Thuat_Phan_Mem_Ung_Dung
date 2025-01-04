@@ -16,6 +16,7 @@ public class AppointmentManagementView extends JFrame {
     public JButton addButton;
     public JButton updateButton;
     public JButton deleteButton;
+    public JButton returnButton; // Added return button
 
     public AppointmentManagementView() {
         setTitle("Appointment Management");
@@ -105,11 +106,14 @@ public class AppointmentManagementView extends JFrame {
         addButton = new JButton("Add");
         updateButton = new JButton("Update");
         deleteButton = new JButton("Delete");
+        returnButton = new JButton("Return"); // Added Return button
 
         buttonPanel.add(searchButton);
         buttonPanel.add(addButton);
         buttonPanel.add(updateButton);
         buttonPanel.add(deleteButton);
+        buttonPanel.add(returnButton); // Add the return button to the panel
+
 
         // Add panels to the frame
         getContentPane().setLayout(new BorderLayout());
@@ -136,6 +140,10 @@ public class AppointmentManagementView extends JFrame {
 
     public void addDeleteButtonListener(ActionListener listener) {
         deleteButton.addActionListener(listener);
+    }
+    
+    public void addReturnButtonListener(ActionListener listener) {
+    	returnButton.addActionListener(listener);
     }
     
     public static void main(String[] args) {
