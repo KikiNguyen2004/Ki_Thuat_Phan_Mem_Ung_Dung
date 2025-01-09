@@ -17,7 +17,7 @@ package MVC.Model.QLPK;
 	        this.buoiKham = buoiKham;
 	        this.dichVu = dichVu;
 	    }
-        
+
 	    // Getters and Setters
 	    public String getMaLichHen() {
 	        return maLichHen;

@@ -1,0 +1,287 @@
+CREATE TABLE Permission (
+    maQuyen nvarchar(50) not null PRIMARY KEY,
+    tenQuyen nvarchar(50) not null,
+    cacQuyenSuDung nvarchar(1000) not null,
+);
+
+CREATE TABLE Patient (
+    maBenhNhan nvarchar(50) NOT NULL PRIMARY KEY,
+    matKhau NVARCHAR(50) NOT NULL,           
+    ngaySinh DATE NOT NULL,               
+    hoTen NVARCHAR(50) NOT NULL,            
+    soDienThoai NVARCHAR(50) NOT NULL,         
+    email NVARCHAR(50) not null,                      
+    ngheNghiep NVARCHAR(50) not null,
+    maQuyen NVARCHAR(50) not null FOREIGN KEY REFERENCES Permission(maQuyen),             
+);
+
+CREATE TABLE Doctor (
+    maBacSi nvarchar(50) NOT NULL PRIMARY KEY, 
+    matKhau NVARCHAR(50) NOT NULL,            
+    ngaySinh DATE NOT NULL,                 
+    hoTen NVARCHAR(50) NOT NULL,          
+    soDienThoai NVARCHAR(50) NOT NULL,       
+    email NVARCHAR(50) not null,                     
+    viTri NVARCHAR(50) not null,           
+    luong BIGINT not null,
+    maQuyen NVARCHAR(50) not null FOREIGN KEY REFERENCES Permission(maQuyen),
+);
+
+CREATE TABLE Employee (
+    maNhanVien nvarchar(50) NOT NULL PRIMARY KEY, 
+    matKhau NVARCHAR(50) NOT NULL,            
+    ngaySinh DATE NOT NULL,                 
+    hoTen NVARCHAR(50) NOT NULL,          
+    soDienThoai NVARCHAR(50) NOT NULL,       
+    email NVARCHAR(50) not null,                     
+    viTri NVARCHAR(50) not null,           
+    luong BIGINT not null,
+    maQuyen NVARCHAR(50) not null FOREIGN KEY REFERENCES Permission(maQuyen),
+);
+
+CREATE TABLE Service (
+        maDichVu nvarchar(50) not null PRIMARY KEY,
+        tenDichVu nvarchar(50) not null,
+        giaTien int not null,
+        trangThai nvarchar(50) not null,
+);
+
+CREATE TABLE Appointment (
+        maLichHen nvarchar(50) NOT NULL PRIMARY KEY,
+	maBenhNhan nvarchar(50) NOT NULL FOREIGN KEY REFERENCES Patient(maBenhNhan),
+	maBacSi nvarchar(50) NOT NULL FOREIGN KEY REFERENCES Doctor(maBacSi),
+	ngayKham date not null,
+	buoiKham nvarchar(50) not null,
+	maDichVu nvarchar(50) not null FOREIGN KEY REFERENCES Service(maDichVu),
+);
+
+CREATE TABLE MedicalRecord (
+        maBenhAn nvarchar(50) NOT NULL PRIMARY KEY,
+	maLichHen nvarchar(50) NOT NULL FOREIGN KEY REFERENCES Appointment(maLichHen),
+	tenBenh nvarchar(50) not null,
+	donThuoc nvarchar(50) ,
+);
+
+CREATE TABLE Invoice (
+        maHoaDon nvarchar(50) not null PRIMARY KEY,
+	maNhanVien nvarchar(50) NOT NULL FOREIGN KEY REFERENCES Employee(maNhanVien),
+	maBenhNhan nvarchar(50) NOT NULL FOREIGN KEY REFERENCES Patient(maBenhNhan),
+	ngayLapHoaDon Date not null,
+	soTienThanhToan int not null,
+	phuongThucThanhToan nvarchar(50) not null,
+        noiDungThanhToan nvarchar(50) not null,
+);
+
+CREATE TABLE Equipment (
+        maVatTu nvarchar(50) not null PRIMARY KEY,
+	tenVatTu nvarchar(50) not Null,
+	giaTien int not null,
+	tinhTrangThietBi nvarchar(50),
+	hanSuDung Date,
+	ngayNhapKho Date not null,
+	nhaCungCap nvarchar(50) not null,
+);
+
+
+--Them thong tin Quyen vao co so du lieu
+INSERT INTO Permission 
+VALUES
+('Quyen001', 'Quyen Benh Nhan', 'Dang nhap vao he thong, nhan thong bao'),
+('Quyen002', 'Quyen Bac Si', 'Dang nhap vao he thong, chinh sua, tim kiem thong tin trong ho so benh an, tim kiem thong tin trong kho vat tu, nhan thong bao'),
+('Quyen003', 'Quyen Nhan Vien', 'Dang nhap vao he thong, chinh sua, tim kiem thong tin benh nhan, chinh sua, tim kiem lich hen giua benh nhan va bac si, chinh sua, tim kiem thong tin trong kho vat tu, phan quyen cho benh nhan');
+
+--Them thong tin Benh Nhan vao co so du lieu
+INSERT INTO Patient 
+VALUES 
+('20220012', '123', '2004-03-27', N'Tran Minh Son', '0358234958', N'Son.TM220012@sis.hust.edu.vn', N'Sinh Vien','Quyen001'),
+('20223812', '123', '2001-11-15', N'Nguyen Phuc Than', '0352227219', N'Than.NP223812@sis.hust.edu.vn', N'Giam Doc','Quyen001'),
+('20224126', '123', '2006-01-19', N'Bui Tuan Son', '0355718273', N'Son.BT224126@sis.hust.edu.vn', N'Nhan Vien Dong Que Quan','Quyen001'),
+('20224413', '123', '1989-12-19', N'Bui Dieu Nhu', '0938462198', N'Nhu.BD224413@sis.hust.edu.vn', N'Ky Su Mach','Quyen001'),
+('20224139', '123', '2003-05-17', N'Truong Quang Thai', '0371629872', N'Thai.TQ224139@sis.hust.edu.vn', N'Lap Trinh Vien IOT','Quyen001'),
+('20224018', '123', '1998-09-19', N'Ngo Xuan Khanh', '0327649212', N'Khanh.NX224018@sis.hust.edu.vn', N'Doi Truong Hoi Sinh Viên','Quyen001'),
+('20224134', '123', '2004-07-12', N'Vu Nguyen Bao Son', '0998362518', N'Son.NVB224134@sis.hust.edu.vn', N'Tuyen Thu Esport','Quyen001'),
+('20223720', '123', '1995-10-25', N'Nguyen Duc Manh', '0599247384', N'Manh.ND223720@sis.hust.edu.vn', N'Co Thu TFT','Quyen001'),
+('20220654', '123', '2001-03-12', N'Nguyen Van Truong', '0983366227', N'Truong.NV220654@sis.hust.edu.vn', N'Truong Lab BKIC','Quyen001'),
+('20224359', '123', '2002-03-29', N'Do Tri Dung', '0983366888', N'Dung.DT224359@sis.hust.edu.vn', N'Co Thu Billiard','Quyen001'),
+('20223624', '123', '1978-04-06', N'Cong Jar', '0473629573', N'Cong.VC223624@sis.hust.edu.vn', 'Chu Cua Hang Ban Lo Hoa','Quyen001');
+
+--Them thong tin Bac Si vao co so du lieu
+INSERT INTO Doctor 
+VALUES
+('BS001', '123', '1977-04-27', 'Pham Thi Duoc', '0387492385', N'phamthiduoc1977@gmail.com', 'Truong Khoa Rang Ham Mat', '85400000', 'Quyen002'),
+('BS002', '123', '1980-09-30', 'Nguyen Thi Tuan', '0856383373', N'nguyenthituan1980@gmail.com', 'Pho Khoa', '55300000', 'Quyen002'),
+('BS003', '123', '1986-08-28', 'Nguyen Danh Long', '0913009252', N'nguyendanhlong1986@gmail.com', 'Bac Si Rang', '40300000', 'Quyen002'),
+('BS004', '123', '1988-04-27', 'Nguyen Manh Quan', '0387492385', N'nguyenmanhquan@gmail.com', 'Bac Si Gay Te', '44800000', 'Quyen002'),
+('BS005', '123', '2000-04-19', 'Nguyen Thi Van', '0387492385', N'phamthiduoc1977@gmail.com', 'Bac Si Tap Su', '12700000', 'Quyen002');
+
+--Them thong tin Nhan Vien vao co so du lieu
+INSERT INTO Employee 
+VALUES
+('NV001', '123', '1990-06-05', 'Pham Nguyen Thanh Loan', '0376492832', 'phamnguyenthanhloan1990@gmail.com', 'Truong Phong Thu Ngan', '20650000', 'Quyen003'), 
+('NV002', '123', '1988-04-29', 'Ngo Minh Long', '0947362649', 'ngominhlong1988@gmail.com', 'Giam Sat Thu Ngan', '14200000', 'Quyen003'),
+('NV003', '123', '1996-03-18', 'Tran Gia Minh', '0957483932', 'trangiaminh1996@gmail.com', 'Giam Sat Thu Ngan', '14200000', 'Quyen003'),
+('NV004', '123', '1995-09-25', 'Nguyen Duy Hai Nam', '0376492832', 'nguyenduyhainam1995@gmail.com', 'Nhan Vien Le Tan', '13000000', 'Quyen003'),
+('NV005', '123', '1999-04-03', 'Nguyen Ngoc Khanh Duy', '0376492832', 'nguyenngockhanhduy1999@gmail.com', 'Nhan Vien Le Tan', '12 620 000', 'Quyen003'),
+('NV006', '123', '1986-06-05', 'Bui Thi Quynh', '0376492832', 'buithiquynh1986@gmail.com', 'Nhan Vien Thu Ngan', '10070000', 'Quyen003'),
+('NV007', '123', '2001-06-05', 'Nguyen Vu Thang', '0376492832', 'nguyenvuthang2001@gmail.com', 'Nhan Vien Part-time', '4200000', 'Quyen003');
+
+--Them thong tin Dich Vu
+INSERT INTO Service 
+VALUES
+('DV001', 'Ve Sinh Rang Va Lay Cao Rang', 1200000 , 'San Sang'),
+('DV002', 'Nieng Rang', 20000000 , 'San Sang'),
+('DV003', 'Trong Rang Implant', 15000000, 'San Sang'),
+('DV004', 'Nho Rang Sau Khong Dau', 1000000, 'San Sang'),
+('DV005', 'Kham Rang Va Tu Van Dieu Tri', 500000, 'San Sang'),
+('DV006', 'Tieu Phau Nha Khoa', 2200000, 'San Sang'),
+('DV007', 'Massage Rang', 1800000, 'San Sang'),
+('DV008', 'Tay Trang Rang', 3500000, 'San Sang'),
+('DV009', 'Lap Rang Su', 20000000, 'San Sang'),
+('DV010', 'Tram Rang', 8000000, 'San Sang');
+
+--Them thong tin Lich Hen
+INSERT INTO Appointment 
+VALUES
+('LH001', '20224018', 'BS001', '2022-12-24', 'Morning', 'DV007'),
+('LH002', '20220012', 'BS001', '2022-12-20', 'Afternoon', 'DV001'),
+('LH003', '20223812', 'BS001', '2022-12-23', 'Evening', 'DV003'),
+('LH004', '20224413', 'BS002', '2022-12-22', 'Morning', 'DV006'),
+('LH005', '20224359', 'BS002', '2022-12-22', 'Evening', 'DV002'),
+('LH006', '20224139', 'BS002', '2022-12-25', 'Morning', 'DV003'),
+('LH007', '20224126', 'BS003', '2022-12-21', 'Morning', 'DV009'),
+('LH008', '20224126', 'BS003', '2022-12-20', 'Evening', 'DV001'),
+('LH009', '20224134', 'BS003', '2022-12-18', 'Morning', 'DV008'),
+('LH010', '20220654', 'BS004', '2022-12-19', 'Afternoon', 'DV004'),
+('LH011', '20223720', 'BS004', '2022-12-22', 'Morning', 'DV004'),
+('LH012', '20223624', 'BS005', '2022-11-27', 'Afternoon', 'DV007');
+
+--Them thong tin Vat Tu
+INSERT INTO Equipment
+VALUES
+('THUOC001', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC002', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC003', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC004', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC005', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC006', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC007', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC008', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC009', 'Thuoc Gay Te', 2000000, NULL, '2024-12-15', '2023-12-20', 'Pfizer'),
+('THUOC010', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC011', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC012', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC013', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC014', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC015', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC016', 'Thuoc Giam Dau', 1500000, null, '2025-09-21', '2022-12-24', 'Merck'),
+('THUOC017', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC018', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC019', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC020', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC021', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC022', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC023', 'Thuoc Giam Dau', 1500000, NULL, '2026-01-15', '2024-01-10', 'Merck'),
+('THUOC024', 'Thuoc Khang Sinh', 1000000,null, '2024-07-08', '2022-12-24', 'Pfizer'),
+('THUOC025', 'Thuoc Khang Sinh', 1000000,null, '2024-07-08', '2022-12-24', 'Pfizer'),
+('THUOC026', 'Thuoc Khang Sinh', 1000000,null, '2024-07-08', '2022-12-24', 'Pfizer'),
+('THUOC027', 'Thuoc Khang Sinh', 1000000,null, '2024-07-08', '2022-12-24', 'Pfizer'),
+('THUOC028', 'Thuoc Khang Sinh', 1000000,null, '2024-07-08', '2022-12-24', 'Pfizer'),
+('THUOC029', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC030', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC031', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC032', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC033', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC034', 'Thuoc Khang Sinh', 1000000, NULL, '2024-11-30', '2023-11-20', 'Pfizer'),
+('THUOC035', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC036', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC037', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC038', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC039', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC040', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC041', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC042', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC043', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC044', 'Kem Danh Rang', 150000, NULL, '2025-02-01', '2024-02-01', 'Colgate'),
+('THUOC045', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC046', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC047', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC048', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC049', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC050', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC051', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC052', 'Thuoc Sat Trung', 800000, NULL, '2024-12-31', '2023-12-15', 'Merck'),
+('THUOC053', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC054', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC055', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC056', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC057', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC058', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC059', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC060', 'Lo Con', 50000,null, '2025-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC061', 'Bang Gac', 20000, null, '2024-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC062', 'Bang Gac', 20000, null, '2024-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC063', 'Bang Gac', 20000, null, '2024-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC064', 'Bang Gac', 20000, null, '2024-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('THUOC065', 'Bang Gac', 20000, null, '2024-07-08', '2022-12-24', 'Cong Ty Co Phan Duoc Binh Dinh'),
+('TB001', 'Tay Khoan', 18000000, 'Su Dung Tot', null, '2023-02-15', 'NSK Nakanishi'),
+('TB002', 'Tay Khoan', 18000000, 'Su Dung Tot', null, '2023-02-15', 'NSK Nakanishi'),
+('TB003', 'Tay Khoan', 18000000, 'Su Dung Tot', null, '2023-02-15', 'NSK Nakanishi'),
+('TB004', 'Tay Khoan', 18000000, 'Su Dung Tot', null, '2023-02-15', 'NSK Nakanishi'),
+('TB005', 'Tay Khoan', 18000000, 'Su Dung Tot', null, '2023-02-15', 'NSK Nakanishi'),
+('TB006', 'May Hut Nen Khi', 165000000, 'Su Dung Tot', null, '2023-12-06', 'KaVo Kerr'),
+('TB007', 'May Hut Nen Khi', 165000000, 'Su Dung Tot', null, '2023-12-06', 'KaVo Kerr'),
+('TB008', 'Ghe Nha Khoa', 750000000, 'Su Dung Tot', null, '2023-06-16', 'Planmeca'),
+('TB009', 'Ghe Nha Khoa', 750000000, 'Su Dung Tot', null, '2023-06-16', 'Planmeca'),
+('TB010', 'Ghe Nha Khoa', 750000000, 'Can Sua Chua', null, '2022-08-21', 'Planmeca'),
+('TB011', 'Thiet Bi Chan Doan Hinh Anh 2D/3D', 2000000000, 'Su Dung Tot', null, '2023-03-18', 'Dentsply Sirona'),
+('TB012', 'Thiet Bi Chan Doan Hinh Anh 2D/3D', 2000000000, 'Su Dung Tot', null, '2023-03-18', 'Dentsply Sirona'),
+('TB013', 'Thiet Bi Dung Trong Cay Ghep Implant', 123000000, 'Su Dung Tot', null, '2023-04-15', 'Dentsply Sirona'),
+('TB014', 'Thiet Bi Dung Trong Cay Ghep Implant', 123000000, 'Su Dung Tot', null, '2023-04-15', 'Dentsply Sirona'),
+('TB015', 'Thiet Bi Dung Trong Tham My', 17000000, 'Su Dung Tot', null, '2023-01-10', 'Dentsply Sirona'),
+('TB016', 'Thiet Bi Dung Trong Tham My', 17000000, 'Su Dung Tot', null, '2024-01-10', 'Dentsply Sirona'),
+('TB017', 'Thiet Bi Dung Trong Tham My', 17000000, 'Su Dung Tot', null, '2024-01-10', 'Dentsply Sirona'),
+('TB018', 'He Thong Vo Trung', 180000000, 'Su Dung Tot', null, '2023-12-30', 'Planmeca'),
+('TB019', 'Den Quang Trung Hop', 6000000, 'Su Dung Tot', null, '2024-01-03', 'A-dec'),
+('TB020', 'Den Quang Trung Hop', 6000000, 'Su Dung Tot', null, '2024-01-03', 'A-dec'),
+('TB021', 'Den Quang Trung Hop', 6000000, 'Su Dung Tot', null, '2024-01-03', 'A-dec'),
+('TB022', 'Den Quang Trung Hop', 6000000, 'Su Dung Tot', null, '2023-07-10', 'A-dec'),
+('TB023', 'Den Quang Trung Hop', 6000000, 'Can Sua Chua', null, '2022-12-31', 'A-dec'),
+('TB024', 'Den Quang Trung Hop', 6000000, 'Sap Hong', null, '2020-06-15', 'A-dec'),
+('TB025', 'May Thoi Cat', 90000000, 'Su Dung Tot', null, '2023-05-16', 'Alibaba'),
+('TB026', 'May Thoi Cat', 90000000, 'Su Dung Tot', null, '2023-05-16', 'Alibaba');
+
+--Them thong tin Hoa Don
+INSERT INTO Invoice
+VALUES
+('HD001', 'NV006', '20220012', '2024-12-20', 1500000, 'Tien mat', 'Su dung dich vu ve sinh rang + Lay cao rang'),
+('HD002', 'NV006', '20223812', '2024-12-23', 2000000, 'Tien mat', 'Su dung dich vu trong rang'),
+('HD003', 'NV006', '20223812', '2024-12-23', 1500000, 'Tien mat', 'Mua thuoc giam dau'),
+('HD004', 'NV006', '20224126', '2024-12-20', 1200000, 'Banking', 'Su dung dich vu ve sinh rang'),
+('HD005', 'NV006', '20224126', '2024-12-21', 2000000, 'Banking', 'Su dung dich vu lap rang su'),
+('HD006', 'NV006', '20224413', '2024-12-22', 2200000, 'Tin dung den', 'Su dung dich vu tieu phau nha khoa'),
+('HD007', 'NV006', '20224139', '2024-12-25', 6000000, 'Tin dung den', 'Su dung dich vu trong rang'),
+('HD008', 'NV006', '20224018', '2024-12-24', 1800000, 'Tien mat', 'Su dung dich vu Massage rang'),
+('HD009', 'NV006', '20224134', '2024-12-18', 3500000, 'Tien mat', 'Su dung dich vu tay trang rang'),
+('HD010', 'NV006', '20223720', '2024-12-22', 2000000, 'Tien mat', 'Su dung dich vu nho rang bang thuoc te (2 chiec)'),
+('HD011', 'NV006', '20220654', '2024-12-19', 1000000, 'Tien mat', 'Su dung dich vu nho rang bang thuoc te'),
+('HD012', 'NV006', '20224359', '2024-12-22', 500000, 'Banking', 'Kham rang + Tu van tu bac si'),
+('HD013', 'NV006', '20224359', '2024-12-22', 20000000, 'Banking', 'Su dung dich vu nieng rang Invisiline'),
+('HD014', 'NV006', '20224359', '2024-12-23', 500000, 'Tien mat', 'Tai kham lan 2, nghe tu van cua bac si'),
+('HD015', 'NV006', '20223624', '2024-11-27', 5000000, 'Tien mat', 'Den lo hoa lam vo'),
+('HD016', 'NV006', '20223624', '2024-11-27', 1800000, 'Tin dung den', 'Su dung dich vu Massage rang');
+
+--Them thong tin Benh An
+INSERT INTO MedicalRecord 
+VALUES
+('BA001', 'LH001', 'Viem Nuou', 'Nuoc muoi'),
+('BA002', 'LH002', 'Danh rang khong ki', 'Nuoc muoi, kem danh rang'),
+('BA003', 'LH003', 'Mat rang bam sinh', 'Thuoc giam dau'),
+('BA004', 'LH004', 'Viem nuou', 'Thuoc khang sinh, nuoc muoi'),
+('BA005', 'LH005', 'Rang kem tham my', 'Nieng rang'),
+('BA006', 'LH006', 'Rang bi me do tac dong vat ly', 'Thuoc giam dau'),
+('BA007', 'LH007', 'Rang o vang, xau', 'Bo rang su cao cap, lo con ve sinh'),
+('BA008', 'LH008', 'Mom thoi', 'Nuoc muoi'),
+('BA009', 'LH009', 'Rang o vang do hut thuoc nhieu, luoi danh rang', 'Khong co'),
+('BA010', 'LH010', 'Sau rang', 'Thuoc giam dau'),
+('BA011', 'LH011', 'Sau rang', 'Thuoc giam dau'),
+('BA012', 'LH012', 'Rang buot khong an duoc do an lanh', 'Nuoc suc mieng dac tri');
